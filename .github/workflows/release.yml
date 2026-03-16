@@ -39,7 +39,7 @@ jobs:
           targets: ${{ matrix.platform.target }}
 
       - name: Build Binary
-        run: cargo build --release --locked --target ${{ matrix.platform.target }}
+        run: cargo build --release --target ${{ matrix.platform.target }}
 
       - name: Prepare Release Asset
         shell: bash
