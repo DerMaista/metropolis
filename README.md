@@ -17,7 +17,7 @@
 ---
 
 ## The Vision
-**Metropolis** is a high-performance, narrative-driven system monitor built for the terminal. It transcends traditional hardware monitoring by transforming raw kernel metrics into a living, breathing **Retro-Cyberpunk Skyline**. 
+**Metropolis** is a high-performance, narrative-driven system monitor built for the terminal. It transcends traditional hardware monitoring by transforming raw kernel metrics into a living, breathing **Cyberpunk Skyline**. 
 
 Every flicker of a neon sign, every shuttle streaking across the sky, and every drop of rain is a direct reflection of your system's heartbeat.
 
