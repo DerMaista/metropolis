@@ -55,18 +55,16 @@ Metropolis is an orchestrated simulation, not just a loop:
 
 ---
 
-## 🕹️ Installation
+## Installation
 
 ### One-Line Install (Linux / macOS)
 ```bash
 curl -fsSL https://raw.githubusercontent.com/5c0/metropolis/main/install.sh | bash
 ```
 
-### Build from Source
+### Crates.io
 ```bash
-git clone https://github.com/5c0/metropolis.git
-cd metropolis
-cargo run --release
+cargo install metropolis-tui
 ```
 
 ### Arch Linux (AUR)
@@ -74,6 +72,13 @@ cargo run --release
 yay -S metropolis
 ```
 
+### Build from Source
+*Requires [Rust](https://www.rust-lang.org/) and `cargo` to be installed.*
+```bash
+git clone https://github.com/5c0/metropolis.git
+cd metropolis
+cargo run --release
+```
 ---
 
 ## Controls
