@@ -57,7 +57,7 @@ Metropolis is an orchestrated simulation, not just a loop:
 
 ## 🕹️ Installation
 
-### ⚡ One-Line Install (Linux / macOS)
+### One-Line Install (Linux / macOS)
 ```bash
 curl -fsSL https://raw.githubusercontent.com/5c0/metropolis/main/install.sh | bash
 ```
