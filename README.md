@@ -1,18 +1,10 @@
 # Metropolis: The City Powered by Your Kernel 🌃🌆
 
-### "The year is 20XX. Your processes aren't just rows in a table. They're the residents. Your CPU isn't just silicon. It's the infrastructure. And the city? The city is breathing."
+## "The year is 20XX. Your processes aren't just rows in a table. They're the residents. Your CPU isn't just silicon. It's the infrastructure. And the city? The city is breathing."
 
-![Metropolis demo](docs/clean.gif)
-![Metropolis rain demo](docs/rain.gif)
-![Metropolis snow demo](docs/snow.gif)
----
+### **Metropolis** is a high-performance, narrative-driven system monitor built for the terminal. It transforms your raw hardware metrics into a living, breathing **Retro-Cyberpunk Skyline**. 
 
-## 🏙️ What is Metropolis?
-**Metropolis** is a high-performance, narrative-driven system monitor built for the terminal. It transforms your raw hardware metrics into a living, breathing **Retro-Cyberpunk Skyline**. 
-
-Inspired by the grit of retro-future sci-fi and the architecture of the Unix soul, Metropolis doesn't just show you that your system is busy—it shows you **why** the city is alive.
-
-### DEMO
+## Demo
 
 ### Night
 ![Metropolis demo](docs/clean.gif)
