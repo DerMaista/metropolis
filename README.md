@@ -16,12 +16,12 @@
 
 ---
 
-## 🌆 The Vision
+## The Vision
 **Metropolis** is a high-performance, narrative-driven system monitor built for the terminal. It transcends traditional hardware monitoring by transforming raw kernel metrics into a living, breathing **Retro-Cyberpunk Skyline**. 
 
 Every flicker of a neon sign, every shuttle streaking across the sky, and every drop of rain is a direct reflection of your system's heartbeat.
 
-## 🎬 Terminal Cinema (Demos)
+## Demos
 
 ### 🌃 Standard Protocol (Night)
 ![Metropolis demo](docs/clean.gif)
@@ -34,20 +34,20 @@ Every flicker of a neon sign, every shuttle streaking across the sky, and every 
 
 ---
 
-## 🚀 The Simulation (Features)
+## Features
 
-### 🏢 **Monolithic Branding**
+### **Monolithic Branding**
 Metropolis is loyal to its host. The skyline features a massive central monolith that reflects your identity:
 - **Cross-Platform DNA**: Native ASCII architecture that automatically detects and renders your OS identity.
 - **Corporate Sovereignty**: The main tower is branded by your OS corporation (e.g., `PARROT CORP`, `ARCH CORP`, `FEDORA SYSTEMS`).
 
-### 🚦 **Resource-Reactive Logistics**
+### **Resource-Reactive Logistics**
 The city infrastructure is directly wired into your kernel:
 - **CPU (The Heartbeat)**: High utility triggers "Rush Hour"—flooding sky-lanes with high-speed traffic and increasing pedestrian density.
 - **Disk I/O (Logistics)**: Intense activity triggers **Heavy Industrial Shuttles**. Watch long-haulers move "physical data" across the district.
 - **RAM (Illumination)**: Memory usage dictates the overall occupancy and glow of the city's monoliths.
 
-### 🚨 **Life in the Grid**
+### **Life in the Grid**
 Metropolis is an orchestrated simulation, not just a loop:
 - **Neon Signage**: Secondary buildings display your **Top CPU Processes** as vibrant neon signs.
 - **Dynamic Pursuits**: Random high-stakes police chases streak across the skyline. Look for the **Red Fugitive** and **Interceptor** units.
@@ -57,21 +57,21 @@ Metropolis is an orchestrated simulation, not just a loop:
 
 ## 🕹️ Installation
 
-### 🦀 Quick Start (Cargo)
+### Quick Start (Cargo)
 ```bash
 git clone https://github.com/5c0/metropolis.git
 cd metropolis
 cargo run --release
 ```
 
-### ❄️ Arch Linux (AUR)
+### Arch Linux (AUR)
 ```bash
 yay -S metropolis
 ```
 
 ---
 
-## 🎮 Controls
+## Controls
 
 | Key | Action |
 |:---:|:---|
