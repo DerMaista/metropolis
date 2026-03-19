@@ -11,7 +11,7 @@ homepage = "https://github.com/5c0/metropolis"
 documentation = "https://github.com/5c0/metropolis#readme"
 keywords = ["tui", "system-monitor", "cyberpunk", "aesthetic", "rust"]
 categories = ["visualization", "command-line-utilities"]
-exclude = ["dist/", "packaging/", "install.sh", "9nbYklr.gif"]
+exclude = ["dist/", "packaging/", "docs/", "install.sh"]
 
 [[bin]]
 name = "metropolis"
