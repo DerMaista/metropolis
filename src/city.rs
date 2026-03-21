@@ -387,6 +387,7 @@ impl Widget for &MetropolisCity {
                 if i == 1 {
                     let display_name = match self.distro.to_lowercase().as_str() {
                         "popos" | "pop_os" => "POP! OS".to_string(),
+                        "endeavouros" => "ENDEAVOUR OS".to_string(),
                         _ => self.distro.to_uppercase(),
                     };
                     sign_text = format!("{} CORP", display_name);
