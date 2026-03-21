@@ -16,9 +16,9 @@
 
 ---
 
-**Metropolis** is a high-performance, narrative-driven system monitor built for the terminal. It transcends traditional hardware monitoring by transforming raw kernel metrics into a living, breathing **Cyberpunk Skyline**. 
+**Metropolis** is a high-performance, terminal system monitor that turns your kernel metrics into a living, breathing **Cyberpunk Skyline**. 
 
-Every flicker of a neon sign, every shuttle streaking across the sky, and every drop of rain is a direct reflection of your system's heartbeat.
+Your hardware drives the simulation in real-time: The city brands itself with your OS logo,  high CPU usage is rush hour, disk I/O is industrial freight, top processes become neon signs, and your RAM usage lights up the skyline.
 
 ## Demos
 
@@ -35,7 +35,7 @@ Every flicker of a neon sign, every shuttle streaking across the sky, and every 
 
 ## Features
 
-- **Dynamic Branding**: The central monolith automatically detects your OS (Arch, Fedora, Ubuntu, etc.) and brands itself accordingly.
+- **Dynamic Branding**: The central building, where most of the residents go in for work, automatically detects your OS (Arch, Fedora, Ubuntu, etc.) and brands itself accordingly.
 - **CPU (The Heartbeat)**: High utility triggers "Rush Hour"—flooding sky-lanes with high-speed traffic and increasing pedestrian density.
 - **Disk I/O (Logistics)**: Intense activity triggers **Heavy Industrial Shuttles**. Watch long-haulers move "physical data" across the district.
 - **RAM (Illumination)**: Memory usage dictates the overall occupancy and glow of the city's monoliths.
