@@ -67,6 +67,23 @@ yay -S metropolis
 winget install 5c0.Metropolis
 ```
 
+### Nix / NixOS (Flake)
+Run directly without installing:
+```bash
+nix run github:5c0/metropolis
+```
+
+Or add to your `flake.nix` inputs:
+```nix
+inputs.metropolis.url = "github:5c0/metropolis";
+```
+Then add to `environment.systemPackages`:
+```nix
+environment.systemPackages = [
+  inputs.metropolis.packages.${system}.default
+];
+```
+
 ### Build from Source
 *Requires [Rust](https://www.rust-lang.org/) and `cargo` to be installed.*
 ```bash
