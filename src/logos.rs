@@ -1277,6 +1277,218 @@ pub fn get_logo(distro: &str) -> DistroLogo {
                 }
             }
         }
+    } else if d.contains("rhel") || d.contains("redhat") {
+        is_compact = true;
+        let red = Color::Rgb(255, 0, 0);
+        let b_bg = Color::Rgb(20, 20, 35);
+        let lines = vec![
+            "      .M.:MMM      ",
+            "     MMMMMMMMMM.   ",
+            "    ,MMMMMMMMMMM   ",
+            " .MM MMMMMMMMMMM   ",
+            "MMMM   MMMMMMMMM   ",
+            "MMMMMM           MM",
+            " MMMMMMMMM     ,MMMM",
+            "   MMMMMMMMMMMMMMMM:",
+            "      `MMMMMMMMMMMM",
+        ];
+
+        let mut min_x = 999; let mut max_x = 0;
+        let mut min_y = 999; let mut max_y = 0;
+        let mut points = Vec::new();
+
+        for (y, line) in lines.iter().enumerate() {
+            for (x, ch) in line.chars().enumerate() {
+                if ch != ' ' {
+                    min_x = min_x.min(x); max_x = max_x.max(x);
+                    min_y = min_y.min(y); max_y = max_y.max(y);
+                    points.push((x, y, ch));
+                }
+            }
+        }
+
+        if !points.is_empty() {
+            let art_width = (max_x - min_x) + 1;
+            let art_height = (max_y - min_y) + 1;
+            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
+            let offset_y = 2;
+
+            for by in 0..art_height {
+                for bx in 0..art_width {
+                    let gx = bx + offset_x;
+                    let gy = by + offset_y;
+                    if gx < 32 && gy < 20 {
+                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
+                    }
+                }
+            }
+
+            for &(x, y, ch) in &points {
+                let gx = (x - min_x) + offset_x;
+                let gy = (y - min_y) + offset_y;
+                if gx < 32 && gy < 20 {
+                    grid[gy][gx] = Some(LogoPixel { ch, color: red, bg: b_bg });
+                }
+            }
+        }
+    } else if d.contains("zorin") {
+        is_compact = true;
+        let blue = Color::Rgb(0, 173, 239);
+        let b_bg = Color::Rgb(20, 20, 35);
+        let lines = vec![
+            "       ZZZZZZ",
+            "           ZZ",
+            "         ZZ  ",
+            "       ZZ    ",
+            "     ZZ      ",
+            "    ZZZZZZ   ",
+        ];
+
+        let mut min_x = 999; let mut max_x = 0;
+        let mut min_y = 999; let mut max_y = 0;
+        let mut points = Vec::new();
+
+        for (y, line) in lines.iter().enumerate() {
+            for (x, ch) in line.chars().enumerate() {
+                if ch != ' ' {
+                    min_x = min_x.min(x); max_x = max_x.max(x);
+                    min_y = min_y.min(y); max_y = max_y.max(y);
+                    points.push((x, y, ch));
+                }
+            }
+        }
+
+        if !points.is_empty() {
+            let art_width = (max_x - min_x) + 1;
+            let art_height = (max_y - min_y) + 1;
+            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
+            let offset_y = 2;
+
+            for by in 0..art_height {
+                for bx in 0..art_width {
+                    let gx = bx + offset_x;
+                    let gy = by + offset_y;
+                    if gx < 32 && gy < 20 {
+                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
+                    }
+                }
+            }
+
+            for &(x, y, ch) in &points {
+                let gx = (x - min_x) + offset_x;
+                let gy = (y - min_y) + offset_y;
+                if gx < 32 && gy < 20 {
+                    grid[gy][gx] = Some(LogoPixel { ch, color: blue, bg: b_bg });
+                }
+            }
+        }
+    } else if d.contains("garuda") {
+        is_compact = true;
+        let pink = Color::Rgb(255, 0, 255);
+        let purple = Color::Rgb(128, 0, 255);
+        let b_bg = Color::Rgb(20, 20, 35);
+        let lines = vec![
+            "        .~~~~-.        ",
+            "       /    ,__`)      ",
+            "      |      \\o/|'-.   ",
+            "      |         /  ,\\  ",
+            "      |        ('--./  ",
+            "      /         \\      ",
+            "     /  ,  ,  ,  \\     ",
+            "     `--'--'--'--'     ",
+        ];
+
+        let mut min_x = 999; let mut max_x = 0;
+        let mut min_y = 999; let mut max_y = 0;
+        let mut points = Vec::new();
+
+        for (y, line) in lines.iter().enumerate() {
+            for (x, ch) in line.chars().enumerate() {
+                if ch != ' ' {
+                    min_x = min_x.min(x); max_x = max_x.max(x);
+                    min_y = min_y.min(y); max_y = max_y.max(y);
+                    points.push((x, y, ch));
+                }
+            }
+        }
+
+        if !points.is_empty() {
+            let art_width = (max_x - min_x) + 1;
+            let art_height = (max_y - min_y) + 1;
+            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
+            let offset_y = 2;
+
+            for by in 0..art_height {
+                for bx in 0..art_width {
+                    let gx = bx + offset_x;
+                    let gy = by + offset_y;
+                    if gx < 32 && gy < 20 {
+                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
+                    }
+                }
+            }
+
+            for &(x, y, ch) in &points {
+                let gx = (x - min_x) + offset_x;
+                let gy = (y - min_y) + offset_y;
+                if gx < 32 && gy < 20 {
+                    let color = if y <= 2 { pink } else { purple };
+                    grid[gy][gx] = Some(LogoPixel { ch, color, bg: b_bg });
+                }
+            }
+        }
+    } else if d.contains("artix") {
+        is_compact = true;
+        let cyan = Color::Cyan;
+        let b_bg = Color::Rgb(20, 20, 35);
+        let lines = vec![
+            "      /\\     ",
+            "     /  \\    ",
+            "    /\\   \\   ",
+            "   /      \\  ",
+            "  /   ,,   \\ ",
+            " /   |  |  -\\",
+            "/_-''    ''-_\\",
+        ];
+
+        let mut min_x = 999; let mut max_x = 0;
+        let mut min_y = 999; let mut max_y = 0;
+        let mut points = Vec::new();
+
+        for (y, line) in lines.iter().enumerate() {
+            for (x, ch) in line.chars().enumerate() {
+                if ch != ' ' {
+                    min_x = min_x.min(x); max_x = max_x.max(x);
+                    min_y = min_y.min(y); max_y = max_y.max(y);
+                    points.push((x, y, ch));
+                }
+            }
+        }
+
+        if !points.is_empty() {
+            let art_width = (max_x - min_x) + 1;
+            let art_height = (max_y - min_y) + 1;
+            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
+            let offset_y = 2;
+
+            for by in 0..art_height {
+                for bx in 0..art_width {
+                    let gx = bx + offset_x;
+                    let gy = by + offset_y;
+                    if gx < 32 && gy < 20 {
+                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
+                    }
+                }
+            }
+
+            for &(x, y, ch) in &points {
+                let gx = (x - min_x) + offset_x;
+                let gy = (y - min_y) + offset_y;
+                if gx < 32 && gy < 20 {
+                    grid[gy][gx] = Some(LogoPixel { ch, color: cyan, bg: b_bg });
+                }
+            }
+        }
     } else if d.contains("rocky") || d.contains("linux") {
         is_compact = true;
         let green = Color::Rgb(16, 172, 80);
