@@ -38,7 +38,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let mut city = MetropolisCity::new(distro, weather);
     
     let tick_rate = Duration::from_millis(50); 
+    let sysinfo_tick_rate = Duration::from_millis(1000);
     let mut last_tick = Instant::now();
+    let mut last_sysinfo_tick = Instant::now();
     let mut proc_names: Vec<String> = Vec::new();
     let mut proc_tick_count = 0;
     let mut last_disk_bytes = 0u64;
@@ -73,7 +75,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
         }
 
         if last_tick.elapsed() >= tick_rate {
-            sys.refresh_all();
+            if last_sysinfo_tick.elapsed() >= sysinfo_tick_rate {
+                sys.refresh_all();
+                last_sysinfo_tick = Instant::now();
+            }
+
             let cpu = sys.global_cpu_info().cpu_usage();
             let ram = (sys.used_memory() as f32 / sys.total_memory() as f32) * 100.0;
             
