@@ -16,7 +16,7 @@
 
 ---
 
-**Metropolis** is a high-performance, terminal system monitor that turns your kernel metrics into a living, breathing **Cyberpunk Skyline**. 
+**Metropolis** is a high-performance, terminal system monitor that turns your kernel metrics into a living, breathing **Cyberpunk City**. 
 
 Your hardware drives the simulation in real-time: The city brands itself with your OS logo,  high CPU usage is rush hour, disk I/O is industrial freight, top processes become neon signs, and your RAM usage lights up the skyline.
 
