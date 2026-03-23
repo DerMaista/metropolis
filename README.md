@@ -107,7 +107,13 @@ cargo run --release
 
 ## Configuration
 
-Metropolis reads its configuration from `config.toml` (typically located in `~/.config/Metropolis/` or `%APPDATA%\Metropolis\`). 
+Metropolis automatically creates its default `config.toml` on first run:
+
+| OS | Config Path |
+|:---|:---|
+| **Linux** | `~/.config/Metropolis/` |
+| **macOS** | `~/Library/Application Support/Metropolis/` |
+| **Windows** | `%APPDATA%\Metropolis\` |
 
 You can customize almost everything:
 - **Themes**: Switch between built-in themes (`matrix`, `cyberpunk`, `sin_city`, `dracula`, `synthwave`) or write your own.
