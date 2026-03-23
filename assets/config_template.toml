@@ -1,0 +1,30 @@
+#   __  __ ______ _______ _____   ____  _____   ____  _      _____  _____ 
+#  |  \/  |  ____|__   __|  __ \ / __ \|  __ \ / __ \| |    |_   _|/ ____|
+#  | \  / | |__     | |  | |__) | |  | | |__) | |  | | |      | | | (___  
+#  | |\/| |  __|    | |  |  _  /| |  | |  ___/| |  | | |      | |  \___ \ 
+#  | |  | | |____   | |  | | \ \| |__| | |    | |__| | |____ _| |_ ____) |
+#  |_|  |_|______|  |_|  |_|  \_\\____/|_|     \____/|______|_____|_____/ 
+#
+# Welcome to Metropolis. This is your cityscape configuration file.
+# By default, all lines are commented out. The engine runs on optimized
+# internal defaults. Uncomment any line to override its value.
+
+[appearance]
+# -----------------------------------------------------------------------------
+# global_theme = "default"           # "cyberpunk", "matrix", "synthwave", "dracula", "sin_city", or any .toml file 
+# solid_background_color = ""        # Sets a solid background color: name, hex, rgb, or "" (transparent)
+# default_weather = "clear"          # Starting mood: "clear", "rain", "snow"
+
+[monolith]
+# -----------------------------------------------------------------------------
+# custom_text = "METROPOLIS"         # Overrides the OS name on the side of the building
+# custom_color = "#55FFFF"           # Main neon sign: Name, Hex, or RGB
+# override_distro = ""               # Manually set the OS logo (reverts to Tux if unsupported)
+
+[simulation]
+# -----------------------------------------------------------------------------
+# max_vehicles = 100                 # Total cars, spinners, and shuttles in the sky
+# max_pedestrians = 15               # People walking on the ground level
+# vehicle_speed_multiplier = 1.0     # Global flight speed (Range: 0.1 to 5.0)
+# weather_speed_multiplier = 1.0     # Particle fall speed
+# weather_density_multiplier = 1.0   # Quantity of rain/snow

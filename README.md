@@ -35,13 +35,14 @@ Every flicker of a neon sign, every shuttle streaking across the sky, and every 
 
 ## Features
 
-- **Dynamic Branding**: The central monolith automatically detects your OS (Arch, Fedora, Ubuntu, etc.) and brands itself accordingly.
+- **Dynamic Branding**: The central monolith automatically detects your OS and brands itself accordingly (or override it with your own).
 - **CPU (The Heartbeat)**: High utility triggers "Rush Hour"—flooding sky-lanes with high-speed traffic and increasing pedestrian density.
 - **Disk I/O (Logistics)**: Intense activity triggers **Heavy Industrial Shuttles**. Watch long-haulers move "physical data" across the district.
 - **RAM (Illumination)**: Memory usage dictates the overall occupancy and glow of the city's monoliths.
 - **Neon Signage**: Secondary buildings display your **Top CPU Processes** as vibrant neon signs.
 - **Dynamic Pursuits**: Random high-stakes police chases streak across the skyline. Look for the **Red Fugitive** and **Interceptor** units.
 - **Procedural Night**: Window patterns and traffic cycles are session-unique.
+- **Fully Customizable**: Swap themes, toggle weather, and fine-tune simulation density via a simple `config.toml` or CLI flags.
 
 ---
 
@@ -104,6 +105,25 @@ cargo run --release
 
 ---
 
+## Configuration
+
+Metropolis reads its configuration from `config.toml` (typically located in `~/.config/Metropolis/` or `%APPDATA%\Metropolis\`). 
+
+You can customize almost everything:
+- **Themes**: Switch between built-in themes (`matrix`, `cyberpunk`, `sin_city`, `dracula`, `synthwave`) or write your own.
+- **The Monolith**: Override the OS detection to force a specific logo, or change the neon text.
+- **Environment**: Force `rain`, `snow`, or `clear` skies, and toggle terminal transparency.
+- **Simulation**: Tune the maximum number of vehicles, pedestrians, and weather density.
+
+For a full list of options, check `assets/config_template.toml`. You can also override any of these settings at runtime with flags (e.g., `--theme matrix`). Run `metropolis --help` for the full list.
+
+### Custom Themes
+You can build your own themes to customize the entire color palette—from the main building's neon signs to the street lamps, weather particles, shuttle traffic, and much more.
+
+Drop custom `.toml` files into the `themes/` directory next to your config file. [Share your city](https://github.com/5c0/metropolis/discussions) in the Theme Gallery!
+
+---
+
 ## Built With
 
 - **[Rust](https://www.rust-lang.org/)**: For sub-millisecond, zero-overhead rendering.
@@ -114,9 +134,6 @@ cargo run --release
 
 <div align="center">
 
-### Connect with the Grid
-*Metropolis is more than a monitor. It's the vision of what your hardware sees when you're not looking.*
-
-[Star this repo](https://github.com/5c0/metropolis/stargazers) if you want to see more districts added.
+[Drop a star](https://github.com/5c0/metropolis/stargazers) if you're enjoying the view.
 
 </div>

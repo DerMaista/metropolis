@@ -1,0 +1,55 @@
+#   __  __ ______ _______ _____   ____  _____   ____  _      _____  _____ 
+#  |  \/  |  ____|__   __|  __ \ / __ \|  __ \ / __ \| |    |_   _|/ ____|
+#  | \  / | |__     | |  | |__) | |  | | |__) | |  | | |      | | | (___  
+#  | |\/| |  __|    | |  |  _  /| |  | |  ___/| |  | | |      | |  \___ \ 
+#  | |  | | |____   | |  | | \ \| |__| | |    | |__| | |____ _| |_ ____) |
+#  |_|  |_|______|  |_|  |_|  \_\\____/|_|     \____/|______|_____|_____/ 
+#
+# CUSTOM THEME TEMPLATE
+# -----------------------------------------------------------------------------
+# Duplicate this file to e.g. 'my_theme.toml' in your themes/ directory.
+# Colors can be Hex ("#RRGGBB"), CSS names ("red"), or RGB ("255, 255, 255").
+
+[metadata]
+name = "Template Theme"
+author = "Your Name"
+version = "1.0"
+description = "A blank canvas for your own Metropolis vision."
+
+# [building]
+# -----------------------------------------------------------------------------
+# building_base_colors = ["#14141E", "#1E141E", "#141E28", "#1E1E1E"]
+# window_lit = "#FFFF55"
+# window_unlit = "#282828"
+# window_dark = "#0F0F0F"
+
+# [neon_metrics]
+# -----------------------------------------------------------------------------
+# These glow colors paint both the neon building signs AND the HUD metric bars.
+# primary   = "#55FFFF"  # <-- CPU Metric, Main Monolith Sign
+# secondary = "#FF55FF"  # <-- RAM Metric, Secondary Building Signs
+# accent    = "#55FF55"  # <-- Disk Metric, Tertiary Building Signs
+# soft      = "#FFFF55"  # <-- Ambient Highlights & Small Signs
+
+# [vehicles]
+# -----------------------------------------------------------------------------
+# vehicle_colors = ["#FF0000", "#FFFFFF", "#FFFF00", "#00FFFF", "#3296FF"]
+# shuttle_colors = ["#FFFF55", "#AAAAAA", "#555555"]
+# police_red = "#FF0000"
+# police_blue = "#0000FF"
+
+# [env]
+# -----------------------------------------------------------------------------
+# street_lamp_lit = "#FFFF96"
+# street_lamp_dim = "#646432"
+# rain = "#00B4B4"
+# rain_bg = "#003C3C"
+# snow = "#FFFFFF"
+# pedestrian = "#AAAAAA"
+# ground = "#282832"
+# ground_dark = "#323246"
+
+# [overrides]
+# -----------------------------------------------------------------------------
+# logo_override = "#FFFFFF"
+

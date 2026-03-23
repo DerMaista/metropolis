@@ -1,6 +1,6 @@
 [package]
 name = "metropolis-tui"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 rust-version = "1.80.0"
 authors = ["5c0 <5c0@5c0.io>"]
@@ -27,14 +27,17 @@ path = "src/main.rs"
 
 [dependencies]
 ratatui = "0.26"
-crossterm = { version = "0.27", features = ["event-stream"] }
+crossterm = "0.27"
 sysinfo = "0.30"
-tokio = { version = "1", features = ["full"] }
 rand = "0.8"
-futures = "0.3"
+lexopt = "0.3"
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.8"
+directories = "5.0"
 
 [profile.release]
-lto = "thin"
+opt-level = "z"
+lto = true
 codegen-units = 1
 strip = true
 panic = "abort"

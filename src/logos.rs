@@ -12,10 +12,50 @@ pub struct DistroLogo {
     pub is_compact: bool,
 }
 
+
+macro_rules! prepare_logo_grid {
+    ($grid:expr, $lines:expr, $is_compact:expr, $b_bg:expr, $offset_y_expr:expr) => {{
+        let mut min_x = 999; let mut max_x = 0;
+        let mut min_y = 999; let mut max_y = 0;
+        let mut points = Vec::new();
+
+        for (y, line) in $lines.iter().enumerate() {
+            for (x, ch) in line.chars().enumerate() {
+                if ch != ' ' {
+                    min_x = min_x.min(x); max_x = max_x.max(x);
+                    min_y = min_y.min(y); max_y = max_y.max(y);
+                    points.push((x, y, ch));
+                }
+            }
+        }
+
+        let mut offset_x = 0;
+        let mut offset_y = 0;
+
+        if !points.is_empty() {
+            let art_width = (max_x - min_x) + 1;
+            let art_height = (max_y - min_y) + 1;
+            offset_x = (32_usize.saturating_sub(art_width)) / 2;
+            offset_y = $offset_y_expr;
+
+            for by in 0..art_height {
+                for bx in 0..art_width {
+                    let gx = bx + offset_x;
+                    let gy = by + offset_y;
+                    if gx < 32 && gy < 20 {
+                        $grid[gy][gx] = Some(LogoPixel { ch: ' ', color: $b_bg, bg: $b_bg });
+                    }
+                }
+            }
+        }
+        (points, min_x, min_y, offset_x, offset_y)
+    }};
+}
+
 pub fn get_logo(distro: &str) -> DistroLogo {
     let d = distro.to_lowercase();
     let mut grid = vec![vec![None; 32]; 20];
-    let b_bg = Color::Rgb(20, 20, 35);
+    let b_bg = Color::Reset;
     let mut is_compact = false;
 
     if d.contains("ubuntu") {
@@ -30,37 +70,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             "  \\  --- _/   ",
             "     ---(_)   ",
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2;
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -78,7 +89,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
     } else if d.contains("debian") {
         is_compact = true;
         let red = Color::Rgb(215, 10, 83);
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
             "  _____     ",
             " /  __ \\    ",
@@ -87,37 +98,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             " -_          ",
             "   --_       ",
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2;
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -131,7 +113,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
         is_compact = true;
         let red = Color::Rgb(204, 0, 0);
         let white = Color::White;
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
 
         let lines = vec![
             "/\\,-'''''-,/\\   ",
@@ -141,37 +123,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             " ;         ;    ",
             "  '-_____-'     ",
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2;
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -191,7 +144,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
         is_compact = true;
         let yellow = Color::Yellow;
         let white = Color::White;
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
 
         let lines = vec![
             "      _____       ",
@@ -202,37 +155,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             " / \\         /    ",
             "    /-_____-\\     ",
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2;
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -255,7 +179,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
     } else if d.contains("arch") {  // I use Arch btw
         is_compact = true;
         let cyan = Color::Cyan;
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
             "       /\\       ",
             "      /  \\      ",
@@ -265,37 +189,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             "  /   |  |   \\  ",
             " /_,,_    _,,_\\ ",
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2;
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -316,7 +211,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
         }
     } else if d.contains("macos") || d.contains("apple") || d.contains("darwin") {
         is_compact = true;
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
             "       .:'     ",
             "    _ :'_      ",
@@ -338,37 +233,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             Color::Magenta,
             Color::Blue,
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2; 
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -382,7 +248,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
         is_compact = true;
         let blue = Color::Rgb(60, 110, 255);
         let white = Color::White;
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
             "      _____     ",
             "     /   __)\\    ",
@@ -393,37 +259,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             "\\ \\__/  |        ",
             " \\(_____/        ",
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2;
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -446,7 +283,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
     } else if d.contains("nixos") {
         let light_cyan = Color::Rgb(126, 186, 223);
         let dark_cyan = Color::Rgb(82, 119, 186);
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
             "          ___   __              ",
             "   /#\\     \\QQ\\ /fy;            ",
@@ -479,7 +316,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
     } else if d.contains("pop") {
         is_compact = true;
         let cyan = Color::Rgb(82, 187, 205);
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
             "______              ",
             "\\   _ \\        __   ",
@@ -490,37 +327,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             "   __\\_\\__(_)_      ",
             "  (___________)`    ",
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2;
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -532,7 +340,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
         }
     } else if d.contains("kali") {
         let kali_blue = Color::Rgb(85, 155, 180);
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
             "  ÆÆÆ                        ",
             "          ÆÆÆÆÆÆ             ",
@@ -581,7 +389,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
         is_compact = true;
         let purple = Color::Rgb(125, 115, 180);
         let white = Color::White;
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
             " _-----_ ",
             "(       \\",
@@ -591,37 +399,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             "(     _- ",
             "\\____-   ",
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2; 
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -634,7 +413,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
     } else if d.contains("suse") {
         is_compact = true;
         let green = Color::Rgb(115, 186, 37);
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
             "  _______     ",
             "__|   __ \\    ",
@@ -644,37 +423,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             "   \\_______   ",
             "__________/   ",
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2;
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -687,7 +437,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
     } else if d.contains("manjaro") {
         is_compact = true;
         let green = Color::Rgb(53, 191, 92);
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
             "||||||||| ||||   ",
             "||||||||| ||||   ",
@@ -697,37 +447,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             "|||| |||| ||||   ",
             "|||| |||| ||||   ",
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2;
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -740,7 +461,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
     } else if d.contains("void") {
         is_compact = true;
         let green = Color::Rgb(71, 128, 97);
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
             "    _______     ",
             " _ \\______ -    ",
@@ -750,37 +471,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             "| \\______ \\_|   ",
             " -_______\\      ",
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2;
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -794,7 +486,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
         is_compact = true;
         let blue = Color::Rgb(13, 89, 127);
         let white = Color::White;
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
             "   /\\ /\\       ",
             "  // \\  \\      ",
@@ -803,37 +495,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             "//      \\  \\   ",
             "         \\     ",
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2;
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -856,7 +519,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
         let yellow = Color::Yellow;
         let green = Color::Green;
         let cyan = Color::Cyan;
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         
         let lines = vec![
             " ____^____    ",
@@ -867,37 +530,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             " |/__|__\\|    ",
             "     v        ",
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2;
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -933,7 +567,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
     } else if d.contains("mint") {
         is_compact = true;
         let green = Color::Rgb(141, 198, 63);
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
             " ___________ ",
             "|_          \\",
@@ -943,37 +577,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             "  | \\_____/ |",
             "  \\_________/",
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2;
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -985,7 +590,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
     } else if d.contains("android") {
         is_compact = true;
         let green = Color::Rgb(164, 198, 57);
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
             "  ;,           ,; ",
             "   ';,.-----.,;'  ",
@@ -994,37 +599,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             "|                 |",
             "'-----------------'",
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2;
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -1036,7 +612,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
     } else if d.contains("elementary") {
         is_compact = true;
         let blue = Color::Rgb(64, 150, 238);
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
             "  _______  ",
             " / ____  \\ ",
@@ -1045,37 +621,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             "\\   /__/  /",
             " \\_______/ ",
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2;
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -1087,7 +634,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
     } else if d.contains("slackware") {
         is_compact = true;
         let blue = Color::Rgb(50, 100, 200);
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
             "   ________   ",
             "  /  ______|  ",
@@ -1097,37 +644,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             "| |________/  ",
             "|____________ ",
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2;
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -1140,7 +658,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
         is_compact = true;
         let cyan = Color::Rgb(0, 255, 255);
         let white = Color::White;
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
             "       _------.      ",
             "      /  ,     \\_    ",
@@ -1151,37 +669,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             " /              /__/)/",
             "|              |      ",
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2;
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -1200,7 +689,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
         let c1 = Color::Rgb(255, 74, 90);   // Red
         let c2 = Color::Rgb(125, 124, 196); // Purple
         let c3 = Color::Rgb(0, 180, 255);   // Light Blue/Cyan
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
             "           /*",
             "         #***** ",
@@ -1210,37 +699,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             " ###**************##",
             "   ###############",
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2;
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -1280,7 +740,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
     } else if d.contains("rhel") || d.contains("redhat") {
         is_compact = true;
         let red = Color::Rgb(255, 0, 0);
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
             "      .M.:MMM      ",
             "     MMMMMMMMMM.   ",
@@ -1292,37 +752,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             "   MMMMMMMMMMMMMMMM:",
             "      `MMMMMMMMMMMM",
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2;
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -1334,7 +765,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
     } else if d.contains("zorin") {
         is_compact = true;
         let blue = Color::Rgb(0, 173, 239);
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
             "       ZZZZZZ",
             "           ZZ",
@@ -1343,37 +774,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             "     ZZ      ",
             "    ZZZZZZ   ",
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2;
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -1386,7 +788,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
         is_compact = true;
         let pink = Color::Rgb(255, 0, 255);
         let purple = Color::Rgb(128, 0, 255);
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
             "        .~~~~-.        ",
             "       /    ,__`)      ",
@@ -1397,37 +799,8 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             "     /  ,  ,  ,  \\     ",
             "     `--'--'--'--'     ",
         ];
-
-        let mut min_x = 999; let mut max_x = 0;
-        let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
-
-        for (y, line) in lines.iter().enumerate() {
-            for (x, ch) in line.chars().enumerate() {
-                if ch != ' ' {
-                    min_x = min_x.min(x); max_x = max_x.max(x);
-                    min_y = min_y.min(y); max_y = max_y.max(y);
-                    points.push((x, y, ch));
-                }
-            }
-        }
-
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
         if !points.is_empty() {
-            let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
-            let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2;
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
-
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
@@ -1440,7 +813,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
     } else if d.contains("artix") {
         is_compact = true;
         let cyan = Color::Cyan;
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
             "      /\\     ",
             "     /  \\    ",
@@ -1449,6 +822,32 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             "  /   ,,   \\ ",
             " /   |  |  -\\",
             "/_-''    ''-_\\",
+        ];
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
+        if !points.is_empty() {
+            for &(x, y, ch) in &points {
+                let gx = (x - min_x) + offset_x;
+                let gy = (y - min_y) + offset_y;
+                if gx < 32 && gy < 20 {
+                    grid[gy][gx] = Some(LogoPixel { ch, color: cyan, bg: b_bg });
+                }
+            }
+        }
+
+    } else if d.contains("cachy") {
+        is_compact = true;
+        let cyan = Color::Cyan;
+        let b_bg = Color::Reset;
+        let lines = vec![
+            "     _____________    ",
+            "    /            /   ◯",
+            "   /    _______ /",
+            "  /    /          ⟋ ⟍ ",
+            " /    /           ⟍_⟋___",
+            " \\    \\              /   \\",
+            "  \\    \\_____________\\___/",
+            "   \\                /",
+            "    \\_____________ /",
         ];
 
         let mut min_x = 999; let mut max_x = 0;
@@ -1469,7 +868,7 @@ pub fn get_logo(distro: &str) -> DistroLogo {
             let art_width = (max_x - min_x) + 1;
             let art_height = (max_y - min_y) + 1;
             let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 2;
+            let offset_y = 2; // Extra margin
 
             for by in 0..art_height {
                 for bx in 0..art_width {
@@ -1489,29 +888,61 @@ pub fn get_logo(distro: &str) -> DistroLogo {
                 }
             }
         }
-    } else if d.contains("rocky") || d.contains("linux") {
+    } else if d.contains("emex") {
         is_compact = true;
-        let green = Color::Rgb(16, 172, 80);
         let white = Color::White;
-        let b_bg = Color::Rgb(20, 20, 35);
+        let b_bg = Color::Reset;
         let lines = vec![
-            "        #####       ",
-            "       #######      ",
-            "       ##O#O##      ",
-            "       #######      ",
-            "     ###########    ",
-            "    #############   ",
-            "   ###############  ",
-            "   ################ ",
-            "  ################# ",
-            "#####################",
-            "#####################",
-            "  ################# ",
+            "          @@@@@@@@@@",
+            "        @@@@@@@@@@@@@@",
+            "      @@@@      @@@@",
+            "    @@@@      @@@@",
+            "  @@@@      @@@@",
+            "@@@@      @@",
+            "  @@@@",
+            "    @@@@@@@@@@@@@@@@",
+            "      @@@@@@@@@@@@@@",
+        ];
+        let (points, min_x, min_y, offset_x, offset_y) = prepare_logo_grid!(grid, lines, is_compact, b_bg, 2);
+        if !points.is_empty() {
+            for &(x, y, ch) in &points {
+                let gx = (x - min_x) + offset_x;
+                let gy = (y - min_y) + offset_y;
+                if gx < 32 && gy < 20 {
+                    grid[gy][gx] = Some(LogoPixel { ch, color: white, bg: b_bg });
+                }
+            }
+        }
+    } else {
+        is_compact = true;
+        // High-contrast, background-free perfect aesthetic wireframe
+        let wireframe_body = Color::DarkGray; 
+        let white_eyes = Color::White;
+        let neon_orange = Color::Rgb(255, 140, 0); 
+        let b_bg = Color::Reset;
+        
+        let lines = vec![
+            "         _nnnn_",
+            "        dGGGGMMb",
+            "       @p~qp~~qMb",
+            "       M|@||@) M|",
+            "       @,----.JM|",
+            "      JS^\\__/  qKL",
+            "     dZP        qKRb",
+            "    dZP          qKKb",
+            "   fZP            SMMb",
+            "   HZM            MMMM",
+            "   FqM            MMMM",
+            " __| \".        |\\dS\"qML",
+            " |    `.       | `' \\Zq",
+            "_)      \\.___.,|     .'",
+            "\\____   )MMMMMP|   .'",
+            "     `-'       `--'",
         ];
 
+        let mut points = Vec::new();
         let mut min_x = 999; let mut max_x = 0;
         let mut min_y = 999; let mut max_y = 0;
-        let mut points = Vec::new();
 
         for (y, line) in lines.iter().enumerate() {
             for (x, ch) in line.chars().enumerate() {
@@ -1525,25 +956,28 @@ pub fn get_logo(distro: &str) -> DistroLogo {
 
         if !points.is_empty() {
             let art_width = (max_x - min_x) + 1;
-            let art_height = (max_y - min_y) + 1;
             let offset_x = (32_usize.saturating_sub(art_width)) / 2;
-            let offset_y = 1;
-
-            for by in 0..art_height {
-                for bx in 0..art_width {
-                    let gx = bx + offset_x;
-                    let gy = by + offset_y;
-                    if gx < 32 && gy < 20 {
-                        grid[gy][gx] = Some(LogoPixel { ch: ' ', color: b_bg, bg: b_bg });
-                    }
-                }
-            }
+            let offset_y = 2; // Extra margin
 
             for &(x, y, ch) in &points {
                 let gx = (x - min_x) + offset_x;
                 let gy = (y - min_y) + offset_y;
                 if gx < 32 && gy < 20 {
-                    let color = if ch == 'O' { white } else { green };
+                    let mut color = wireframe_body;
+                    
+                    // Eyes
+                    if y == 3 && x >= 8 && x <= 13 { color = white_eyes; }
+                    // Beak
+                    else if y == 4 && x >= 8 && x <= 13 { color = neon_orange; }
+                    else if y == 5 && x >= 8 && x <= 12 { color = neon_orange; }
+                    // Feet
+                    else if y == 11 && ((x >= 1 && x <= 6) || (x >= 15 && x <= 16)) { color = neon_orange; }
+                    else if y == 12 && ((x >= 1 && x <= 7) || (x >= 15 && x <= 18) || x == 20) { color = neon_orange; }
+                    else if y == 13 { color = neon_orange; }
+                    else if y == 14 && (x <= 8 || x >= 15) { color = neon_orange; }
+                    else if y == 15 { color = neon_orange; }
+
+
                     grid[gy][gx] = Some(LogoPixel { ch, color, bg: b_bg });
                 }
             }

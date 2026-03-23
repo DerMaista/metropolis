@@ -1,5 +1,8 @@
+mod args;
 mod city;
+mod config;
 mod logos;
+mod theme;
 
 use city::{MetropolisCity, Weather};
 use crossterm::{
@@ -8,22 +11,18 @@ use crossterm::{
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
 use ratatui::{backend::CrosstermBackend, Terminal};
-use std::{env, error::Error, io, time::{Duration, Instant}};
+use std::{error::Error, io, time::{Duration, Instant}};
 use sysinfo::System;
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn Error>> {
-    let args: Vec<String> = env::args().collect();
-    let mut weather = Weather::Clear;
-    for i in 0..args.len() {
-        if args[i] == "--weather" && i + 1 < args.len() {
-            match args[i+1].to_lowercase().as_str() {
-                "rain" => weather = Weather::Rain,
-                "snow" => weather = Weather::Snow,
-                _ => weather = Weather::Clear,
-            }
-        }
-    }
+fn main() -> Result<(), Box<dyn Error>> {
+    let cli_args = args::parse()?;
+    let config = config::Config::load();
+    
+    let weather = match cli_args.weather.as_deref().unwrap_or(&config.appearance.default_weather).to_lowercase().as_str() {
+        "rain" => Weather::Rain,
+        "snow" => Weather::Snow,
+        _ => Weather::Clear,
+    };
 
     enable_raw_mode()?;
     let mut stdout = io::stdout();
@@ -31,11 +30,33 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let backend = CrosstermBackend::new(stdout);
     let mut terminal = Terminal::new(backend)?;
 
-    let mut sys = System::new_all();
+    let mut sys = System::new();
+    sys.refresh_memory();
+    sys.refresh_cpu_usage();
+    sys.refresh_processes();
     
     // DETECT DISTRO
-    let distro = System::name().unwrap_or_else(|| "linux".to_string()).to_lowercase();
-    let mut city = MetropolisCity::new(distro, weather);
+    let distro = cli_args.distro.clone().unwrap_or_else(|| {
+        if !config.monolith.override_distro.is_empty() {
+            config.monolith.override_distro.clone()
+        } else {
+            System::name().unwrap_or_else(|| "linux".to_string())
+        }
+    }).to_lowercase();
+    
+    let theme_name = cli_args.theme.as_deref().unwrap_or(&config.appearance.global_theme);
+    let global_theme = theme::Theme::from_str(theme_name);
+
+    let mut city = MetropolisCity::new(
+        distro, 
+        weather, 
+        global_theme,
+        config.appearance.solid_background_color,
+        config.monolith.custom_text,
+        config.monolith.custom_color,
+        config.simulation,
+    );
+    city.debug_mode = cli_args.debug;
     
     let tick_rate = Duration::from_millis(50); 
     let sysinfo_tick_rate = Duration::from_millis(1000);
@@ -43,33 +64,46 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let mut last_sysinfo_tick = Instant::now();
     let mut proc_names: Vec<String> = Vec::new();
     let mut last_disk_bytes = 0u64;
+    let mut needs_draw = true;
 
     loop {
-        terminal.draw(|f| {
-            f.render_widget(&city, f.size());
-        })?;
+        if needs_draw {
+            terminal.draw(|f| {
+                f.render_widget(&city, f.size());
+            })?;
+            needs_draw = false;
+        }
 
         let timeout = tick_rate
             .checked_sub(last_tick.elapsed())
             .unwrap_or_else(|| Duration::from_secs(0));
 
         if event::poll(timeout)? {
-            if let Event::Key(key) = event::read()? {
-                if key.kind == event::KeyEventKind::Press {
-                    match key.code {
-                        KeyCode::Char('q') => break,
-                        KeyCode::Char('r') => {
-                            city.weather = if city.weather == Weather::Rain { Weather::Clear } else { Weather::Rain };
-                        },
-                        KeyCode::Char('s') => {
-                            city.weather = if city.weather == Weather::Snow { Weather::Clear } else { Weather::Snow };
-                        },
-                        KeyCode::Char('d') => {
-                            city.debug_mode = !city.debug_mode;
-                        },
-                        _ => {}
+            match event::read()? {
+                Event::Key(key) => {
+                    if key.kind == event::KeyEventKind::Press {
+                        match key.code {
+                            KeyCode::Char('q') => break,
+                            KeyCode::Char('r') => {
+                                city.weather = if city.weather == Weather::Rain { Weather::Clear } else { Weather::Rain };
+                                needs_draw = true;
+                            },
+                            KeyCode::Char('s') => {
+                                city.weather = if city.weather == Weather::Snow { Weather::Clear } else { Weather::Snow };
+                                needs_draw = true;
+                            },
+                            KeyCode::Char('d') => {
+                                city.debug_mode = !city.debug_mode;
+                                needs_draw = true;
+                            },
+                            _ => {}
+                        }
                     }
-                }
+                },
+                Event::Resize(_, _) => {
+                    needs_draw = true;
+                },
+                _ => {}
             }
         }
 
@@ -79,7 +113,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
             let mut disk_usage = city.disk_usage;
 
             if last_sysinfo_tick.elapsed() >= sysinfo_tick_rate {
-                sys.refresh_all();
+                sys.refresh_memory();
+                sys.refresh_cpu_usage();
+                sys.refresh_processes();
                 last_sysinfo_tick = Instant::now();
 
                 cpu = sys.global_cpu_info().cpu_usage();
@@ -112,6 +148,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
             city.update(terminal.size()?, cpu, ram, disk_usage, proc_names.clone());
             last_tick = Instant::now();
+            needs_draw = true;
         }
     }
 
