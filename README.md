@@ -120,7 +120,7 @@ For a full list of options, check `assets/config_template.toml`. You can also ov
 ### Custom Themes
 You can build your own themes to customize the entire color palette—from the main building's neon signs to the street lamps, weather particles, shuttle traffic, and much more.
 
-Drop custom `.toml` files into the `themes/` directory next to your config file. [Share your city](https://github.com/5c0/metropolis/discussions) in the Theme Gallery!
+Drop custom `.toml` files into the `themes/` directory next to your config file. [Share your city](https://github.com/5c0/metropolis/discussions/categories/theme-gallery) in the Theme Gallery!
 
 ---
 
