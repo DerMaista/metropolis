@@ -111,7 +111,7 @@ Metropolis automatically creates its default `config.toml` on first run:
 
 | OS | Config Path |
 |:---|:---|
-| **Linux** | `~/.config/Metropolis/` |
+| **Linux** | `~/.config/metropolis/` |
 | **macOS** | `~/Library/Application Support/Metropolis/` |
 | **Windows** | `%APPDATA%\Metropolis\` |
 
