@@ -1,7 +1,7 @@
 # Maintainer: 5c0 <admin@5c0.io>
 pkgname=metropolis-git
 _pkgname=metropolis
-pkgver=0.1.1
+pkgver=0.1.2
 pkgrel=1
 pkgdesc="A cinematic, retro-cyberpunk system monitor for the terminal powered by Rust."
 arch=('x86_64' 'aarch64')
